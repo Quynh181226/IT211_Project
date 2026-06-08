@@ -1,0 +1,36 @@
+package com.it211_ss21_exam3.seeder;
+
+
+import com.it211_ss21_exam3.models.constants.RoleName;
+import com.it211_ss21_exam3.models.entities.Role;
+import com.it211_ss21_exam3.models.repositories.IRoleRepository;
+import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+
+@Component
+@RequiredArgsConstructor
+public class RoleDataSeeder implements CommandLineRunner {
+    private final IRoleRepository roleRepository;
+
+    @Override
+    public void run(String @NonNull ... args) throws Exception {
+        if (roleRepository.count() == 0) {
+
+            Role adminRole = new Role();
+            adminRole.setRoleName(RoleName.ROLE_ADMIN);
+
+            Role userRole = new Role();
+            userRole.setRoleName(RoleName.ROLE_USER);
+
+            roleRepository.saveAll(Arrays.asList(adminRole, userRole));
+
+            System.out.println("Đã seed dữ liệu Role thành công!");
+        } else {
+            System.out.println("Dữ liệu Role đã tồn tại, bỏ qua bước seeder.");
+        }
+    }
+}

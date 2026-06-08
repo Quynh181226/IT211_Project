@@ -1,0 +1,20 @@
+package com.it211_ss21_exam3.models.dtos.res;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Set;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
+public class JwtRes {
+    private String accessToken;
+    private String refreshToken;
+    @Builder.Default
+    private final String type = "Bearer";
+    private Set<String> roles;
+}
