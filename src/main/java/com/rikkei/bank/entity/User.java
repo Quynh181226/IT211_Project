@@ -1,0 +1,47 @@
+package com.rikkei.bank.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
+
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Column(name = "pin")
+    private String pin;  // Mã PIN giao dịch (6 số, mã hóa BCrypt)
+
+    @Column(name = "is_kyc")
+    private boolean isKyc = false;  // Đã xác thực danh tính chưa
+
+    @Column(name = "is_locked")
+    private boolean isLocked = false;  // Tài khoản có bị khóa không
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
+}
