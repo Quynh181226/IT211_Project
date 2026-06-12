@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class InsufficientBalanceException extends RuntimeException {
-    private final int status = 409;
+    private final int status = 400;
 
     public InsufficientBalanceException(String message) {
         super(message);

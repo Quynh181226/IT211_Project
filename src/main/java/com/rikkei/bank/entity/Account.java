@@ -36,6 +36,6 @@ public class Account {
     private boolean isActive = true;  // Tài khoản còn hoạt động không
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 }

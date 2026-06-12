@@ -143,6 +143,14 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authorization,
                                     @AuthenticationPrincipal UserDetailsImpl currentUser) {
+
+        // THÊM KIỂM TRA NULL
+        if (currentUser == null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "User not authenticated");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
         if (authorization != null && authorization.startsWith("Bearer ")) {
             String token = authorization.substring(7);
             authService.logout(token, currentUser.getId());
