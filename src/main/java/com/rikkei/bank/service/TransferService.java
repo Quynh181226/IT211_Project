@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequiredArgsConstructor
 @Slf4j
 public class TransferService {
-
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
@@ -36,35 +35,28 @@ public class TransferService {
 
     @Transactional(rollbackFor = Exception.class)
     public TransferResponse transfer(TransferRequest request, User currentUser) {
-        // 1. Lấy tài khoản nguồn
         Account fromAccount = accountService.findByAccountNumber(request.getFromAccountNumber());
 
-        // 2. Kiểm tra quyền sở hữu tài khoản nguồn
         if (!fromAccount.getUser().getId().equals(currentUser.getId())) {
             throw new BadRequestException("You don't own this account");
         }
 
-        // 3. Kiểm tra tài khoản còn hoạt động không
         if (!fromAccount.isActive()) {
             throw new BadRequestException("Source account is inactive");
         }
 
-        // 4. Kiểm tra PIN giao dịch
         if (!passwordEncoder.matches(request.getPin(), currentUser.getPin())) {
             throw new BadRequestException("Invalid transaction PIN");
         }
 
-        // 5. Kiểm tra số dư
         if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
             throw new InsufficientBalanceException("Insufficient balance. Available: " + fromAccount.getBalance());
         }
 
-        // 6. Xác định loại giao dịch và tài khoản đích
         TransactionType transactionType;
         Account toAccount;
 
         if (request.getToBankName() == null || request.getToBankName().isEmpty()) {
-            // Nội bộ
             transactionType = TransactionType.INTERNAL;
             toAccount = accountService.findByAccountNumber(request.getToAccountNumber());
 
@@ -72,20 +64,16 @@ public class TransferService {
                 throw new BadRequestException("Destination account is inactive");
             }
         } else {
-            // Liên ngân hàng
             transactionType = TransactionType.EXTERNAL;
 
-            // Tạo hoặc lấy tài khoản đích (tài khoản external)
             toAccount = accountRepository.findByAccountNumber(request.getToAccountNumber())
                     .orElseGet(() -> createExternalAccount(request));
         }
 
-        // 7. Kiểm tra không được chuyển tiền cho chính mình
         if (fromAccount.getId().equals(toAccount.getId())) {
             throw new BadRequestException("Cannot transfer to the same account");
         }
 
-        // 8. Thực hiện chuyển tiền
         BigDecimal newFromBalance = fromAccount.getBalance().subtract(request.getAmount());
         BigDecimal newToBalance = toAccount.getBalance().add(request.getAmount());
 
@@ -95,7 +83,6 @@ public class TransferService {
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
 
-        // 9. Tạo bản ghi giao dịch
         String transactionCode = generateTransactionCode();
 
         Transaction transaction = Transaction.builder()
@@ -118,7 +105,6 @@ public class TransferService {
                 toAccount.getAccountNumber(),
                 transactionType);
 
-        // 10. Trả về response
         return TransferResponse.builder()
                 .transactionCode(transactionCode)
                 .fromAccountNumber(fromAccount.getAccountNumber())
@@ -140,7 +126,7 @@ public class TransferService {
                 .balance(BigDecimal.ZERO)
                 .bankName(request.getToBankName())
                 .isActive(true)
-                .user(null)  // Không thuộc user nào trong hệ thống
+                .user(null)
                 .build();
 
         return accountRepository.save(externalAccount);

@@ -17,14 +17,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
 public class AccountController {
-
     private final AccountService accountService;
     private final AuthService authService;
 

@@ -18,7 +18,6 @@ import java.util.Map;
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 public class AdminController {
-
     private final UserService userService;
 
     @GetMapping("/users")

@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface TokenBlacklistRepository extends JpaRepository<TokenBlacklist, String> {
-
     boolean existsByToken(String token);
 
     @Modifying

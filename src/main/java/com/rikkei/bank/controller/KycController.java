@@ -15,21 +15,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;  // thêm nếu cần
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/kyc")
 @RequiredArgsConstructor
 public class KycController {
-
     private final KycService kycService;
     private final AuthService authService;
 
-    @PostMapping("/submit")
-    public ResponseEntity<KycResponse> submitKyc(@Valid @RequestBody KycRequest request,
-                                                 @AuthenticationPrincipal UserDetailsImpl currentUser) {
+    @PostMapping("/upload")
+    public ResponseEntity<KycResponse> submitKyc(
+            @Valid @ModelAttribute KycRequest request,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) throws IOException {
+
         User user = authService.getCurrentUser(currentUser.getUsername());
         KycResponse response = kycService.submitKyc(request, user);
         return ResponseEntity.ok(response);

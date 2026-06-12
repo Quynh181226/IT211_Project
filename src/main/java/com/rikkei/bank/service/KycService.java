@@ -1,5 +1,7 @@
 package com.rikkei.bank.service;
 
+
+import com.cloudinary.Cloudinary;
 import com.rikkei.bank.constants.KycStatus;
 import com.rikkei.bank.dto.request.KycRequest;
 import com.rikkei.bank.dto.response.KycResponse;
@@ -11,42 +13,36 @@ import com.rikkei.bank.repository.KycProfileRepository;
 import com.rikkei.bank.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class KycService {
-
     private final KycProfileRepository kycProfileRepository;
     private final UserRepository userRepository;
-
-    // Trong thực tế sẽ dùng Cloudinary, nhưng hiện tại giả lập lưu URL
-    @Value("${cloudinary.placeholder-url:https://via.placeholder.com/500}")
-    private String placeholderUrl;
+    private final Cloudinary cloudinary;
 
     @Transactional
-    public KycResponse submitKyc(KycRequest request, User user) {
-        // Kiểm tra đã có hồ sơ chưa
+    public KycResponse submitKyc(KycRequest request, User user) throws IOException {
         if (kycProfileRepository.existsByUserAndStatus(user, KycStatus.PENDING)) {
             throw new BadRequestException("You already have a pending KYC request");
         }
-
         if (user.isKyc()) {
             throw new BadRequestException("You are already KYC verified");
         }
 
-        // Trong thực tế: upload ảnh lên Cloudinary và lấy URL
-        // Hiện tại dùng placeholder
-        String frontUrl = placeholderUrl;
-        String backUrl = placeholderUrl;
-        String portraitUrl = placeholderUrl;
+        String frontUrl = uploadToCloudinary(request.getFrontCitizenId(), "kyc/front");
+        String backUrl = uploadToCloudinary(request.getBackCitizenId(), "kyc/back");
+        String portraitUrl = uploadToCloudinary(request.getPortrait(), "kyc/portrait");
 
         KycProfile kycProfile = KycProfile.builder()
                 .frontCitizenIdUrl(frontUrl)
@@ -68,6 +64,20 @@ public class KycService {
                 .build();
     }
 
+    private String uploadToCloudinary(MultipartFile file, String folder) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new BadRequestException("File is empty or null");
+        }
+
+        Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(),
+                Map.of(
+                        "folder", folder,
+                        "resource_type", "auto"
+                ));
+
+        return (String) uploadResult.get("secure_url");
+    }
+
     @Transactional
     public KycResponse approveKyc(Long kycId, boolean approved, String rejectReason, User staffUser) {
         KycProfile kyc = kycProfileRepository.findById(kycId)
@@ -79,7 +89,6 @@ public class KycService {
 
         if (approved) {
             kyc.setStatus(KycStatus.CONFIRM);
-            // Cập nhật isKyc = true cho user
             User user = kyc.getUser();
             user.setKyc(true);
             userRepository.save(user);
@@ -110,16 +119,13 @@ public class KycService {
     }
 
     public KycResponse getMyKycStatus(User user) {
-        KycProfile kyc = kycProfileRepository.findByUser(user)
-                .orElse(null);
-
+        KycProfile kyc = kycProfileRepository.findByUser(user).orElse(null);
         if (kyc == null) {
             return KycResponse.builder()
                     .status("NOT_SUBMITTED")
                     .message("You haven't submitted KYC yet")
                     .build();
         }
-
         return toResponse(kyc);
     }
 

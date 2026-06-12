@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OpenAccountRequest {
-
     @NotBlank(message = "Account name cannot be blank")
     private String accountName;
 }

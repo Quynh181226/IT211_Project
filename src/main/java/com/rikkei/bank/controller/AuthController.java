@@ -24,7 +24,6 @@ import java.util.Map;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
     private final UserService userService;
 
@@ -54,8 +53,6 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authorization,
                                     @AuthenticationPrincipal UserDetailsImpl currentUser) {
-
-        // THÊM KIỂM TRA NULL
         if (currentUser == null) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "User not authenticated");

@@ -16,7 +16,6 @@ import jakarta.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransferRequest {
-
     @NotBlank(message = "From account number cannot be blank")
     private String fromAccountNumber;
 
@@ -29,10 +28,8 @@ public class TransferRequest {
 
     private String description;
 
-    // Chỉ dùng khi chuyển tiền liên ngân hàng (nếu null thì coi như nội bộ)
     private String toBankName;
 
-    // Mã PIN giao dịch (bắt buộc)
     @NotBlank(message = "PIN cannot be blank")
     @Size(min = 4, max = 6, message = "PIN must be 4-6 characters")
     private String pin;

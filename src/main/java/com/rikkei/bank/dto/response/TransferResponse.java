@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransferResponse {
-
     private String transactionCode;
     private String fromAccountNumber;
     private String toAccountNumber;
@@ -23,5 +22,5 @@ public class TransferResponse {
     private String description;
     private String status;
     private LocalDateTime transactionTime;
-    private BigDecimal remainingBalance;  // Số dư còn lại sau giao dịch
+    private BigDecimal remainingBalance;
 }

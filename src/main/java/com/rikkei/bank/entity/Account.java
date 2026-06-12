@@ -13,27 +13,26 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class Account {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "account_number", unique = true, nullable = false, length = 20)
-    private String accountNumber;  // Số tài khoản (duy nhất)
+    private String accountNumber;
 
     @Column(name = "account_name", nullable = false)
-    private String accountName;  // Tên chủ tài khoản
+    private String accountName;
 
     @Column(name = "balance", nullable = false)
     @Builder.Default
-    private BigDecimal balance = BigDecimal.ZERO;  // Số dư
+    private BigDecimal balance = BigDecimal.ZERO;
 
     @Column(name = "bank_name")
-    private String bankName;  // Tên ngân hàng (null nếu là tài khoản Rikkei Bank)
+    private String bankName;
 
     @Column(name = "is_active")
     @Builder.Default
-    private boolean isActive = true;  // Tài khoản còn hoạt động không
+    private boolean isActive = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = true)

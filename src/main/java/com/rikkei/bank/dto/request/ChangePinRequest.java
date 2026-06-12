@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChangePinRequest {
-
     @NotBlank(message = "Old PIN cannot be blank")
     @Size(min = 4, max = 6, message = "PIN must be 4-6 characters")
     private String oldPin;

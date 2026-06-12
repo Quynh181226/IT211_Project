@@ -18,7 +18,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class RefreshTokenService {
-
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
 
@@ -30,7 +29,6 @@ public class RefreshTokenService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BadRequestException("User not found with id: " + userId));
 
-        // Revoke tất cả refresh token cũ của user này
         refreshTokenRepository.revokeAllByUser(user);
 
         String token = UUID.randomUUID().toString();
@@ -76,13 +74,5 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new BadRequestException("User not found"));
         refreshTokenRepository.revokeAllByUser(user);
         log.info("Revoked all refresh tokens for user ID: {}", userId);
-    }
-
-    @Transactional
-    public void deleteAllByUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BadRequestException("User not found"));
-        refreshTokenRepository.deleteAllByUser(user);
-        log.info("Deleted all refresh tokens for user ID: {}", userId);
     }
 }

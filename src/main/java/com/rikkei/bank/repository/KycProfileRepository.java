@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface KycProfileRepository extends JpaRepository<KycProfile, Long> {
-
     Optional<KycProfile> findByUser(User user);
 
     Page<KycProfile> findByStatus(KycStatus status, Pageable pageable);

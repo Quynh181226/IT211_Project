@@ -13,8 +13,6 @@ import java.util.Arrays;
 @Component
 @Slf4j
 public class AuditLogAspect {
-
-    // Ghi log cho tất cả các method trong service layer
     @Before("execution(* com.rikkei.bank.service.*.*(..))")
     public void logBeforeMethod(JoinPoint joinPoint) {
         log.info("[START] {}.{} - Arguments: {}",
@@ -39,13 +37,11 @@ public class AuditLogAspect {
                 error.getMessage());
     }
 
-    // Ghi log đặc biệt cho giao dịch chuyển tiền (AUDIT)
     @AfterReturning(pointcut = "execution(* com.rikkei.bank.service.TransferService.transfer(..))", returning = "result")
     public void auditTransfer(JoinPoint joinPoint, Object result) {
         log.info("[AUDIT] TRANSFER completed - Details: {}", result);
     }
 
-    // Đo thời gian thực hiện method có annotation @LogExecutionTime
     @Around("@annotation(logExecutionTime)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint, LogExecutionTime logExecutionTime) throws Throwable {
         long start = System.currentTimeMillis();

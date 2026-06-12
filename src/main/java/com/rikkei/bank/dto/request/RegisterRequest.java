@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterRequest {
-
     @NotBlank(message = "Full name cannot be blank")
     private String fullName;
 

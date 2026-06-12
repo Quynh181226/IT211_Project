@@ -13,14 +13,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionHistoryResponse {
-
     private String transactionCode;
     private LocalDateTime transactionDate;
     private BigDecimal amount;
-    private String type;  // "DEBIT" (trừ tiền) hoặc "CREDIT" (cộng tiền)
-    private String counterPartyAccount;  // Tài khoản đối diện
-    private String counterPartyName;     // Tên chủ tài khoản đối diện
+    private String type;
+    private String counterPartyAccount;
+    private String counterPartyName;
     private String description;
-    private BigDecimal balanceAfter;     // Số dư sau giao dịch
-    private String transactionType;      // "INTERNAL" hoặc "EXTERNAL"
+    private BigDecimal balanceAfter;
+    private String transactionType;
 }

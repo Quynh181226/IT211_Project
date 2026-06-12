@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
-
     Optional<RefreshToken> findByToken(String token);
 
     @Modifying
@@ -26,9 +25,4 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     @Transactional
     @Query("UPDATE RefreshToken rt SET rt.revoked = true WHERE rt.user = :user")
     void revokeAllByUser(@Param("user") User user);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM RefreshToken rt WHERE rt.expiryDate < :now")
-    void deleteAllExpiredTokens(@Param("now") Instant now);
 }

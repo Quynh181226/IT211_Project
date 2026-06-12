@@ -13,12 +13,9 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Slf4j
 public class BlacklistService {
-
     private final TokenBlacklistRepository tokenBlacklistRepository;
 
-    // Thêm token vào blacklist
     public void blacklistToken(String token) {
-        // Token sẽ hết hạn sau 5 phút (tương ứng với thời gian sống của access token)
         LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(5);
 
         TokenBlacklist blacklist = TokenBlacklist.builder()
@@ -30,12 +27,10 @@ public class BlacklistService {
         log.info("Token blacklisted: {}", token.substring(0, Math.min(token.length(), 20)) + "...");
     }
 
-    // Kiểm tra token có trong blacklist không
     public boolean isBlacklisted(String token) {
         return tokenBlacklistRepository.existsByToken(token);
     }
 
-    // Xóa token hết hạn (chạy mỗi giờ)
     @Scheduled(cron = "0 0 * * * *")
     public void cleanupExpiredTokens() {
         LocalDateTime now = LocalDateTime.now();

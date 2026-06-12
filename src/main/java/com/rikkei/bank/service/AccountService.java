@@ -22,12 +22,10 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 @Slf4j
 public class AccountService {
-
     private final AccountRepository accountRepository;
 
     @Transactional
     public AccountResponse openAccount(User user, String accountName) {
-        // Kiểm tra user đã KYC chưa
         if (!user.isKyc()) {
             throw new BadRequestException("Please complete KYC before opening an account");
         }
@@ -38,7 +36,7 @@ public class AccountService {
                 .accountNumber(accountNumber)
                 .accountName(accountName)
                 .balance(BigDecimal.ZERO)
-                .bankName(null)  // null nghĩa là tài khoản Rikkei Bank
+                .bankName(null)
                 .isActive(true)
                 .user(user)
                 .build();
@@ -58,7 +56,6 @@ public class AccountService {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found: " + accountNumber));
 
-        // Kiểm tra quyền sở hữu
         if (!account.getUser().getId().equals(user.getId())) {
             throw new BadRequestException("You don't own this account");
         }
@@ -71,17 +68,7 @@ public class AccountService {
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found: " + accountNumber));
     }
 
-    public void updateBalance(Account account, BigDecimal newBalance) {
-        account.setBalance(newBalance);
-        accountRepository.save(account);
-    }
-
-    public boolean existsByAccountNumber(String accountNumber) {
-        return accountRepository.existsByAccountNumber(accountNumber);
-    }
-
     private String generateAccountNumber() {
-        // Format: 890 + yyyyMMddHHmmss + 4 số ngẫu nhiên
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         String random = String.format("%04d", new SecureRandom().nextInt(10000));
         return "890" + timestamp + random;

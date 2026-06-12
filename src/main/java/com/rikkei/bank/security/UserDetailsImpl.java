@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-
     private Long id;
     private String username;
     private String password;

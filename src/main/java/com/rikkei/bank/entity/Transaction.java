@@ -16,31 +16,30 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Transaction {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "transaction_code", unique = true, nullable = false, length = 50)
-    private String transactionCode;  // Mã giao dịch duy nhất
+    private String transactionCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_account_id", nullable = false)
-    private Account fromAccount;  // Tài khoản gửi
+    private Account fromAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_account_id", nullable = false)
-    private Account toAccount;  // Tài khoản nhận
+    private Account toAccount;
 
     @Column(name = "amount", nullable = false)
-    private BigDecimal amount;  // Số tiền
+    private BigDecimal amount;
 
     @Column(name = "description", length = 255)
-    private String description;  // Nội dung chuyển tiền
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
-    private TransactionType transactionType;  // INTERNAL hoặc EXTERNAL
+    private TransactionType transactionType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

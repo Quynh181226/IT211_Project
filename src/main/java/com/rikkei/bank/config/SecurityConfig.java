@@ -72,16 +72,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // CORS Configuration
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-                // CSRF Disable
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // Session Management - Stateless
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // Exception Handling
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -94,25 +87,16 @@ public class SecurityConfig {
                             response.getWriter().write("{\"status\": 403, \"error\": \"Forbidden\", \"message\": \"" + accessDeniedException.getMessage() + "\"}");
                         })
                 )
-
-                // Authorization Rules
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Authenticated endpoints
                         .anyRequest().authenticated()
                 )
-
-                // Authentication Provider
                 .authenticationProvider(authenticationProvider())
-
-                // JWT Filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

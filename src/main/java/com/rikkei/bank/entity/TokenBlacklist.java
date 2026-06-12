@@ -16,11 +16,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class TokenBlacklist {
-
     @Id
     @Column(name = "token", length = 500)
-    private String token;  // Access Token bị thu hồi
+    private String token;
 
     @Column(name = "expiry_date", nullable = false)
-    private LocalDateTime expiryDate;  // Token hết hạn lúc nào (để xóa)
+    private LocalDateTime expiryDate;
 }

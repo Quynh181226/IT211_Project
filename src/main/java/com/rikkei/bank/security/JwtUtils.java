@@ -17,7 +17,6 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtUtils {
-
     @Value("${jwt.secret}")
     private String jwtSecret;
 
@@ -75,10 +74,5 @@ public class JwtUtils {
             log.error("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
-    }
-
-    // Thêm method này vào JwtUtils.java
-    public String generateToken(String username) {
-        return generateAccessToken(username);
     }
 }

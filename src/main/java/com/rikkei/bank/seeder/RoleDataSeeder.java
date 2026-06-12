@@ -17,14 +17,12 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 public class RoleDataSeeder implements CommandLineRunner {
-
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
-        // Seed Roles
         if (roleRepository.count() == 0) {
             Role adminRole = Role.builder().roleName(RoleName.ROLE_ADMIN).build();
             Role staffRole = Role.builder().roleName(RoleName.ROLE_STAFF).build();
@@ -37,7 +35,6 @@ public class RoleDataSeeder implements CommandLineRunner {
             log.info("Seeded roles: ADMIN, STAFF, CUSTOMER");
         }
 
-        // Seed Admin User (nếu chưa có)
         if (userRepository.count() == 0) {
             Role adminRole = roleRepository.findByRoleName(RoleName.ROLE_ADMIN).orElseThrow();
 

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RefreshTokenRequest {
-
     @NotBlank(message = "Refresh token cannot be blank")
     private String refreshToken;
 }

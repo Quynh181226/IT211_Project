@@ -24,37 +24,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public void changePin(User user, ChangePinRequest request) {
-        // Kiểm tra old PIN
         if (!passwordEncoder.matches(request.getOldPin(), user.getPin())) {
             throw new BadRequestException("Old PIN is incorrect");
         }
 
-        // Kiểm tra new PIN và confirm PIN
         if (!request.getNewPin().equals(request.getConfirmPin())) {
             throw new BadRequestException("New PIN and confirm PIN do not match");
         }
 
-        // Cập nhật PIN mới
         String encodedNewPin = passwordEncoder.encode(request.getNewPin());
         user.setPin(encodedNewPin);
         userRepository.save(user);
 
         log.info("PIN changed for user: {}", user.getUsername());
-    }
-
-    @Transactional
-    public void setInitialPin(User user, String pin) {
-        String encodedPin = passwordEncoder.encode(pin);
-        user.setPin(encodedPin);
-        userRepository.save(user);
-        log.info("Initial PIN set for user: {}", user.getUsername());
     }
 
     public Page<UserResponse> getAllUsers(Pageable pageable) {

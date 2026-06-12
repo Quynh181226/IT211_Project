@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -43,18 +42,15 @@ public class AuthService {
 
     @Transactional
     public void register(RegisterRequest request) {
-        // Kiểm tra username đã tồn tại chưa
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new BadRequestException("Username already exists");
         }
 
-        // Gán role mặc định là CUSTOMER
         Set<Role> roles = new HashSet<>();
         Role customerRole = roleRepository.findByRoleName(RoleName.ROLE_CUSTOMER)
                 .orElseThrow(() -> new BadRequestException("Default role not found"));
         roles.add(customerRole);
 
-        // Tạo user mới
         User user = User.builder()
                 .fullName(request.getFullName())
                 .username(request.getUsername())
@@ -76,12 +72,10 @@ public class AuthService {
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-            // Kiểm tra tài khoản có bị khóa không
             if (userDetails.isLocked()) {
                 throw new BadRequestException("Account is locked. Please contact admin.");
             }
 
-            // Tạo token
             String accessToken = jwtUtils.generateAccessToken(userDetails.getUsername());
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
@@ -107,17 +101,13 @@ public class AuthService {
     }
 
     public RefreshTokenResponse refreshToken(String refreshTokenString) {
-        // Tìm và xác thực refresh token
         RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenString);
         refreshTokenService.verifyExpiration(refreshToken);
 
-        // Lấy user
         User user = refreshToken.getUser();
 
-        // Tạo access token mới
         String newAccessToken = jwtUtils.generateAccessToken(user.getUsername());
 
-        // Rotate refresh token (tạo mới, revoke cũ)
         refreshTokenService.revokeAllByUser(user.getId());
         RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user.getId());
 
@@ -132,10 +122,8 @@ public class AuthService {
 
     @Transactional
     public void logout(String accessToken, Long userId) {
-        // Thêm access token vào blacklist
         blacklistService.blacklistToken(accessToken);
 
-        // Xóa tất cả refresh token của user
         refreshTokenService.revokeAllByUser(userId);
 
         log.info("User logged out, userId: {}", userId);

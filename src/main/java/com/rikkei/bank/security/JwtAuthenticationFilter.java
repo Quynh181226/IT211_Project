@@ -21,7 +21,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
     private final JwtUtils jwtUtils;
     private final UserDetailsService userDetailsService;
     private final BlacklistService blacklistService;
@@ -35,7 +34,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = parseJwt(request);
 
             if (jwt != null && jwtUtils.validateToken(jwt)) {
-                // Kiểm tra token có trong blacklist không
                 if (blacklistService.isBlacklisted(jwt)) {
                     log.error("Token is blacklisted: {}", jwt);
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

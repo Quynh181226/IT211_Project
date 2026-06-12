@@ -12,11 +12,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KycResponse {
-
     private Long id;
-    private String status;  // PENDING, CONFIRM, REJECT
+    private String status;
     private String message;
-    private String rejectReason;  // Nếu bị từ chối
+    private String rejectReason;
     private LocalDateTime submittedAt;
     private LocalDateTime reviewedAt;
 }

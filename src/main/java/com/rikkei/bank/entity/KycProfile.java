@@ -14,19 +14,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class KycProfile {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "front_citizen_id_url", length = 500)
-    private String frontCitizenIdUrl;  // Ảnh CCCD mặt trước
+    private String frontCitizenIdUrl;
 
     @Column(name = "back_citizen_id_url", length = 500)
-    private String backCitizenIdUrl;   // Ảnh CCCD mặt sau
+    private String backCitizenIdUrl;
 
     @Column(name = "portrait_url", length = 500)
-    private String portraitUrl;        // Ảnh chân dung
+    private String portraitUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -34,13 +33,13 @@ public class KycProfile {
     private KycStatus status = KycStatus.PENDING;
 
     @Column(name = "reject_reason", length = 500)
-    private String rejectReason;  // Lý do từ chối (nếu có)
+    private String rejectReason;
 
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
 
     @Column(name = "reviewed_at")
-    private LocalDateTime reviewedAt;  // Thời gian duyệt
+    private LocalDateTime reviewedAt;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

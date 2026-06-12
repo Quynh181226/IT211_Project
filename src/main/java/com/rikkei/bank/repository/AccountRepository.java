@@ -13,13 +13,9 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-
     Optional<Account> findByAccountNumber(String accountNumber);
 
     boolean existsByAccountNumber(String accountNumber);
 
     Page<Account> findByUser(User user, Pageable pageable);
-
-    @Query("SELECT a FROM Account a WHERE a.user.id = :userId AND a.isActive = true")
-    Page<Account> findActiveAccountsByUserId(@Param("userId") Long userId, Pageable pageable);
 }

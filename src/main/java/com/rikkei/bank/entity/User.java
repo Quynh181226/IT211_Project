@@ -14,7 +14,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,13 +28,13 @@ public class User {
     private String password;
 
     @Column(name = "pin")
-    private String pin;  // Mã PIN giao dịch (6 số, mã hóa BCrypt)
+    private String pin;
 
     @Column(name = "is_kyc")
-    private boolean isKyc = false;  // Đã xác thực danh tính chưa
+    private boolean isKyc = false;
 
     @Column(name = "is_locked")
-    private boolean isLocked = false;  // Tài khoản có bị khóa không
+    private boolean isLocked = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

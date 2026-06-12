@@ -1,6 +1,6 @@
 package com.rikkei.bank.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KycRequest {
+    @NotNull(message = "Front citizen ID image is required")
+    private MultipartFile frontCitizenId;
 
-    @NotBlank(message = "Front citizen ID image is required")
-    private String frontCitizenId;  // base64 hoặc multipart, tùy cách implement
+    @NotNull(message = "Back citizen ID image is required")
+    private MultipartFile backCitizenId;
 
-    @NotBlank(message = "Back citizen ID image is required")
-    private String backCitizenId;
-
-    @NotBlank(message = "Portrait image is required")
-    private String portrait;
+    @NotNull(message = "Portrait image is required")
+    private MultipartFile portrait;
 }
