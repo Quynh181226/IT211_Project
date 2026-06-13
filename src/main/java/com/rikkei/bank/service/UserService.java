@@ -46,8 +46,7 @@ public class UserService {
     }
 
     public Page<UserResponse> getAllUsers(Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable);
-        return users.map(this::toResponse);
+        return userRepository.findAllUserProjection(pageable);
     }
 
     @Transactional
@@ -80,20 +79,5 @@ public class UserService {
         userRepository.save(user);
 
         log.info("Role {} assigned to user: {}", roleName, user.getUsername());
-    }
-
-    private UserResponse toResponse(User user) {
-        Set<String> roles = user.getRoles().stream()
-                .map(role -> role.getRoleName().name())
-                .collect(Collectors.toSet());
-
-        return UserResponse.builder()
-                .id(user.getId())
-                .fullName(user.getFullName())
-                .username(user.getUsername())
-                .isKyc(user.isKyc())
-                .isLocked(user.isLocked())
-                .roles(roles)
-                .build();
     }
 }

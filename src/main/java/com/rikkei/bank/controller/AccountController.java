@@ -1,5 +1,6 @@
 package com.rikkei.bank.controller;
 
+import com.rikkei.bank.annotation.LogExecutionTime;
 import com.rikkei.bank.dto.request.OpenAccountRequest;
 import com.rikkei.bank.dto.response.AccountResponse;
 import com.rikkei.bank.dto.response.BalanceResponse;
@@ -25,6 +26,7 @@ public class AccountController {
     private final AccountService accountService;
     private final AuthService authService;
 
+    @LogExecutionTime
     @PostMapping("/open")
     public ResponseEntity<AccountResponse> openAccount(@Valid @RequestBody OpenAccountRequest request,
                                                        @AuthenticationPrincipal UserDetailsImpl currentUser) {

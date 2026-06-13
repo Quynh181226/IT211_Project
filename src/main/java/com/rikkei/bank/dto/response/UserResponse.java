@@ -18,4 +18,12 @@ public class UserResponse {
     private boolean isKyc;
     private boolean isLocked;
     private Set<String> roles;
+
+    public UserResponse(Long id, String fullName, String username, boolean isKyc, boolean isLocked) {
+        this.id = id;
+        this.fullName = fullName;
+        this.username = username;
+        this.isKyc = isKyc;
+        this.isLocked = isLocked;
+    }
 }

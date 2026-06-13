@@ -1,5 +1,6 @@
 package com.rikkei.bank.service;
 
+import com.rikkei.bank.annotation.LogExecutionTime;
 import com.rikkei.bank.constants.TransactionStatus;
 import com.rikkei.bank.constants.TransactionType;
 import com.rikkei.bank.dto.request.TransferRequest;
@@ -33,6 +34,7 @@ public class TransferService {
 
     private static final AtomicLong sequence = new AtomicLong(1);
 
+    @LogExecutionTime
     @Transactional(rollbackFor = Exception.class)
     public TransferResponse transfer(TransferRequest request, User currentUser) {
         Account fromAccount = accountService.findByAccountNumber(request.getFromAccountNumber());

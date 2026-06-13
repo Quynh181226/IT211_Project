@@ -44,20 +44,12 @@ public class JwtUtils {
         return getAllClaimsFromToken(token).getSubject();
     }
 
-    public Date extractExpiration(String token) {
-        return getAllClaimsFromToken(token).getExpiration();
-    }
-
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-    }
-
-    public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
     }
 
     public boolean validateToken(String token) {
@@ -74,5 +66,9 @@ public class JwtUtils {
             log.error("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
+    }
+
+    public long getExpirationMillisFromToken(String token) {
+        return getAllClaimsFromToken(token).getExpiration().getTime();
     }
 }

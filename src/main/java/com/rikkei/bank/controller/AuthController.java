@@ -1,9 +1,7 @@
 package com.rikkei.bank.controller;
 
-import com.rikkei.bank.dto.request.ChangePinRequest;
-import com.rikkei.bank.dto.request.LoginRequest;
-import com.rikkei.bank.dto.request.RefreshTokenRequest;
-import com.rikkei.bank.dto.request.RegisterRequest;
+import com.rikkei.bank.annotation.LogExecutionTime;
+import com.rikkei.bank.dto.request.*;
 import com.rikkei.bank.dto.response.LoginResponse;
 import com.rikkei.bank.dto.response.RefreshTokenResponse;
 import com.rikkei.bank.entity.User;
@@ -38,12 +36,14 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @LogExecutionTime
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
 
+    @LogExecutionTime
     @PostMapping("/refresh")
     public ResponseEntity<RefreshTokenResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         RefreshTokenResponse response = authService.refreshToken(request.getRefreshToken());
@@ -77,6 +77,22 @@ public class AuthController {
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "PIN changed successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request.getUsername());
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "OTP has been sent to your registered contact");
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request.getUsername(), request.getOtp(), request.getNewPassword());
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Password reset successfully. Please login again.");
         return ResponseEntity.ok(response);
     }
 }

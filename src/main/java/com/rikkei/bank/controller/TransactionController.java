@@ -1,5 +1,6 @@
 package com.rikkei.bank.controller;
 
+import com.rikkei.bank.annotation.LogExecutionTime;
 import com.rikkei.bank.dto.request.TransferRequest;
 import com.rikkei.bank.dto.response.TransactionHistoryResponse;
 import com.rikkei.bank.dto.response.TransferResponse;
@@ -25,6 +26,7 @@ public class TransactionController {
     private final TransactionHistoryService transactionHistoryService;
     private final AuthService authService;
 
+    @LogExecutionTime
     @PostMapping("/transfer")
     public ResponseEntity<TransferResponse> transfer(@Valid @RequestBody TransferRequest request,
                                                      @AuthenticationPrincipal UserDetailsImpl currentUser) {
@@ -33,6 +35,7 @@ public class TransactionController {
         return ResponseEntity.ok(response);
     }
 
+    @LogExecutionTime
     @GetMapping("/history")
     public ResponseEntity<Page<TransactionHistoryResponse>> getTransactionHistory(
             @RequestParam String accountNumber,

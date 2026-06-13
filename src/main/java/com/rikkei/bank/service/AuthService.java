@@ -38,7 +38,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
-    private final BlacklistService blacklistService;
+    private final OtpService otpService;
+    private final RedisBlacklistService redisBlacklistService;
 
     @Transactional
     public void register(RegisterRequest request) {
@@ -122,15 +123,39 @@ public class AuthService {
 
     @Transactional
     public void logout(String accessToken, Long userId) {
-        blacklistService.blacklistToken(accessToken);
-
+        long expirationMillis = jwtUtils.getExpirationMillisFromToken(accessToken);
+        redisBlacklistService.blacklistTokenWithJwtExpiration(accessToken, expirationMillis);
         refreshTokenService.revokeAllByUser(userId);
-
         log.info("User logged out, userId: {}", userId);
     }
 
     public User getCurrentUser(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new BadRequestException("User not found"));
+    }
+
+    public void forgotPassword(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BadRequestException("User not found with username: " + username));
+
+        String otp = otpService.generateOtp(username);
+        log.info("OTP for user {}: {}", username, otp);
+    }
+
+    public void resetPassword(String username, String otp, String newPassword) {
+        if (!otpService.verifyOtp(username, otp)) {
+            throw new BadRequestException("Invalid or expired OTP");
+        }
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        otpService.removeOtp(username);
+        refreshTokenService.revokeAllByUser(user.getId());
+
+        log.info("Password reset successfully for user: {}", username);
     }
 }
