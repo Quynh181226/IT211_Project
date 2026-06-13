@@ -40,6 +40,7 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final OtpService otpService;
     private final RedisBlacklistService redisBlacklistService;
+    private final EmailService emailService;
 
     @Transactional
     public void register(RegisterRequest request) {
@@ -55,6 +56,7 @@ public class AuthService {
         User user = User.builder()
                 .fullName(request.getFullName())
                 .username(request.getUsername())
+                .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .roles(roles)
                 .isKyc(false)
@@ -139,7 +141,9 @@ public class AuthService {
                 .orElseThrow(() -> new BadRequestException("User not found with username: " + username));
 
         String otp = otpService.generateOtp(username);
-        log.info("OTP for user {}: {}", username, otp);
+        emailService.sendOtp(user.getEmail(), otp);
+
+        log.info("OTP sent to email: {}", user.getEmail());
     }
 
     public void resetPassword(String username, String otp, String newPassword) {

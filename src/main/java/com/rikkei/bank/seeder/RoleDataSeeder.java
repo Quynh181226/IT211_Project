@@ -41,15 +41,16 @@ public class RoleDataSeeder implements CommandLineRunner {
             User admin = User.builder()
                     .fullName("System Administrator")
                     .username("admin")
-                    .password(passwordEncoder.encode("admin123"))
-                    .pin(passwordEncoder.encode("123456"))
+                    .email("quynh2682@icloud.com")
+                    .password(passwordEncoder.encode("Qazqaz147147"))
+                    .pin(passwordEncoder.encode("147147"))
                     .isKyc(true)
                     .isLocked(false)
                     .roles(Set.of(adminRole))
                     .build();
 
             userRepository.save(admin);
-            log.info("Seeded admin user: admin/admin123");
+            log.info("Seeded admin user: admin/adminQuynh");
         }
     }
 }
