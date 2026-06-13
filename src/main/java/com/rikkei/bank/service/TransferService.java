@@ -1,6 +1,5 @@
 package com.rikkei.bank.service;
 
-import com.rikkei.bank.annotation.LogExecutionTime;
 import com.rikkei.bank.constants.TransactionStatus;
 import com.rikkei.bank.constants.TransactionType;
 import com.rikkei.bank.dto.request.TransferRequest;
@@ -10,6 +9,7 @@ import com.rikkei.bank.entity.Transaction;
 import com.rikkei.bank.entity.User;
 import com.rikkei.bank.exception.BadRequestException;
 import com.rikkei.bank.exception.InsufficientBalanceException;
+import com.rikkei.bank.exception.OptimisticLockException;
 import com.rikkei.bank.repository.AccountRepository;
 import com.rikkei.bank.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequiredArgsConstructor
 @Slf4j
 public class TransferService {
+
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
@@ -34,7 +35,6 @@ public class TransferService {
 
     private static final AtomicLong sequence = new AtomicLong(1);
 
-    @LogExecutionTime
     @Transactional(rollbackFor = Exception.class)
     public TransferResponse transfer(TransferRequest request, User currentUser) {
         Account fromAccount = accountService.findByAccountNumber(request.getFromAccountNumber());
@@ -51,6 +51,8 @@ public class TransferService {
             throw new BadRequestException("Invalid transaction PIN");
         }
 
+        Long currentVersion = fromAccount.getVersion();
+
         if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
             throw new InsufficientBalanceException("Insufficient balance. Available: " + fromAccount.getBalance());
         }
@@ -61,13 +63,11 @@ public class TransferService {
         if (request.getToBankName() == null || request.getToBankName().isEmpty()) {
             transactionType = TransactionType.INTERNAL;
             toAccount = accountService.findByAccountNumber(request.getToAccountNumber());
-
             if (!toAccount.isActive()) {
                 throw new BadRequestException("Destination account is inactive");
             }
         } else {
             transactionType = TransactionType.EXTERNAL;
-
             toAccount = accountRepository.findByAccountNumber(request.getToAccountNumber())
                     .orElseGet(() -> createExternalAccount(request));
         }
@@ -79,11 +79,20 @@ public class TransferService {
         BigDecimal newFromBalance = fromAccount.getBalance().subtract(request.getAmount());
         BigDecimal newToBalance = toAccount.getBalance().add(request.getAmount());
 
-        fromAccount.setBalance(newFromBalance);
-        toAccount.setBalance(newToBalance);
+        int updatedRows = accountRepository.updateBalanceAndVersion(
+                fromAccount.getId(),
+                newFromBalance,
+                currentVersion
+        );
 
-        accountRepository.save(fromAccount);
+        if (updatedRows == 0) {
+            throw new OptimisticLockException("Transaction failed due to concurrent modification. Please retry.");
+        }
+
+        toAccount.setBalance(newToBalance);
         accountRepository.save(toAccount);
+
+        fromAccount.setBalance(newFromBalance);
 
         String transactionCode = generateTransactionCode();
 
@@ -130,7 +139,6 @@ public class TransferService {
                 .isActive(true)
                 .user(null)
                 .build();
-
         return accountRepository.save(externalAccount);
     }
 

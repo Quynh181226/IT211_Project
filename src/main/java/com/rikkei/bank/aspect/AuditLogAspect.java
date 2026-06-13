@@ -13,6 +13,21 @@ import java.util.Arrays;
 @Component
 @Slf4j
 public class AuditLogAspect {
+    @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
+    public void controllerMethods() {}
+
+    @Around("controllerMethods()")
+    public Object logControllerPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
+        long start = System.currentTimeMillis();
+        Object result = joinPoint.proceed();
+        long executionTime = System.currentTimeMillis() - start;
+        log.info("[CONTROLLER PERFORMANCE] {}.{} executed in {} ms",
+                joinPoint.getSignature().getDeclaringTypeName(),
+                joinPoint.getSignature().getName(),
+                executionTime);
+        return result;
+    }
+
     @Before("execution(* com.rikkei.bank.service.*.*(..))")
     public void logBeforeMethod(JoinPoint joinPoint) {
         log.info("[START] {}.{} - Arguments: {}",
@@ -38,22 +53,19 @@ public class AuditLogAspect {
     }
 
     @AfterReturning(pointcut = "execution(* com.rikkei.bank.service.TransferService.transfer(..))", returning = "result")
-    public void auditTransfer(JoinPoint joinPoint, Object result) {
+    public void auditTransfer(Object result) {
         log.info("[AUDIT] TRANSFER completed - Details: {}", result);
     }
 
-    @Around("@annotation(logExecutionTime)")
-    public Object logExecutionTime(ProceedingJoinPoint joinPoint, LogExecutionTime logExecutionTime) throws Throwable {
+    @Around("@annotation(com.rikkei.bank.annotation.LogExecutionTime)")
+    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
-
         Object proceed = joinPoint.proceed();
-
         long executionTime = System.currentTimeMillis() - start;
         log.info("[PERFORMANCE] {}.{} executed in {} ms",
                 joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(),
                 executionTime);
-
         return proceed;
     }
 }

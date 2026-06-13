@@ -4,10 +4,12 @@ import com.rikkei.bank.annotation.LogExecutionTime;
 import com.rikkei.bank.dto.request.OpenAccountRequest;
 import com.rikkei.bank.dto.response.AccountResponse;
 import com.rikkei.bank.dto.response.BalanceResponse;
+import com.rikkei.bank.dto.response.StandardResponse;
 import com.rikkei.bank.entity.User;
 import com.rikkei.bank.security.UserDetailsImpl;
 import com.rikkei.bank.service.AccountService;
 import com.rikkei.bank.service.AuthService;
+import com.rikkei.bank.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,24 +30,24 @@ public class AccountController {
 
     @LogExecutionTime
     @PostMapping("/open")
-    public ResponseEntity<AccountResponse> openAccount(@Valid @RequestBody OpenAccountRequest request,
-                                                       @AuthenticationPrincipal UserDetailsImpl currentUser) {
+    public ResponseEntity<StandardResponse<AccountResponse>> openAccount(@Valid @RequestBody OpenAccountRequest request,
+                                                                         @AuthenticationPrincipal UserDetailsImpl currentUser) {
         User user = authService.getCurrentUser(currentUser.getUsername());
         AccountResponse response = accountService.openAccount(user, request.getAccountName());
-        return ResponseEntity.ok(response);
+        return ResponseUtil.success(response, "Account opened successfully");
     }
 
     @GetMapping("/my-accounts")
-    public ResponseEntity<Page<AccountResponse>> getMyAccounts(@AuthenticationPrincipal UserDetailsImpl currentUser,
-                                                               @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<StandardResponse<Page<AccountResponse>>> getMyAccounts(@AuthenticationPrincipal UserDetailsImpl currentUser,
+                                                                                 @PageableDefault(size = 10) Pageable pageable) {
         User user = authService.getCurrentUser(currentUser.getUsername());
         Page<AccountResponse> accounts = accountService.getMyAccounts(user, pageable);
-        return ResponseEntity.ok(accounts);
+        return ResponseUtil.success(accounts, "Get accounts successfully");
     }
 
     @GetMapping("/{accountNumber}/balance")
-    public ResponseEntity<BalanceResponse> getBalance(@PathVariable String accountNumber,
-                                                      @AuthenticationPrincipal UserDetailsImpl currentUser) {
+    public ResponseEntity<StandardResponse<BalanceResponse>> getBalance(@PathVariable String accountNumber,
+                                                                        @AuthenticationPrincipal UserDetailsImpl currentUser) {
         User user = authService.getCurrentUser(currentUser.getUsername());
         BigDecimal balance = accountService.getBalance(accountNumber, user);
 
@@ -54,6 +56,6 @@ public class AccountController {
                 .balance(balance)
                 .build();
 
-        return ResponseEntity.ok(response);
+        return ResponseUtil.success(response, "Get balance successfully");
     }
 }

@@ -2,6 +2,7 @@ package com.rikkei.bank.controller;
 
 import com.rikkei.bank.annotation.LogExecutionTime;
 import com.rikkei.bank.dto.request.TransferRequest;
+import com.rikkei.bank.dto.response.StandardResponse;
 import com.rikkei.bank.dto.response.TransactionHistoryResponse;
 import com.rikkei.bank.dto.response.TransferResponse;
 import com.rikkei.bank.entity.User;
@@ -9,6 +10,7 @@ import com.rikkei.bank.security.UserDetailsImpl;
 import com.rikkei.bank.service.AuthService;
 import com.rikkei.bank.service.TransactionHistoryService;
 import com.rikkei.bank.service.TransferService;
+import com.rikkei.bank.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,22 +30,22 @@ public class TransactionController {
 
     @LogExecutionTime
     @PostMapping("/transfer")
-    public ResponseEntity<TransferResponse> transfer(@Valid @RequestBody TransferRequest request,
-                                                     @AuthenticationPrincipal UserDetailsImpl currentUser) {
+    public ResponseEntity<StandardResponse<TransferResponse>> transfer(@Valid @RequestBody TransferRequest request,
+                                                                       @AuthenticationPrincipal UserDetailsImpl currentUser) {
         User user = authService.getCurrentUser(currentUser.getUsername());
         TransferResponse response = transferService.transfer(request, user);
-        return ResponseEntity.ok(response);
+        return ResponseUtil.success(response, "Transfer successful");
     }
 
     @LogExecutionTime
     @GetMapping("/history")
-    public ResponseEntity<Page<TransactionHistoryResponse>> getTransactionHistory(
+    public ResponseEntity<StandardResponse<Page<TransactionHistoryResponse>>> getTransactionHistory(
             @RequestParam String accountNumber,
             @AuthenticationPrincipal UserDetailsImpl currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
 
         User user = authService.getCurrentUser(currentUser.getUsername());
         Page<TransactionHistoryResponse> history = transactionHistoryService.getTransactionHistory(accountNumber, user, pageable);
-        return ResponseEntity.ok(history);
+        return ResponseUtil.success(history, "Get transaction history successfully");
     }
 }
