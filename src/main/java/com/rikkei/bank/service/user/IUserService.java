@@ -10,7 +10,7 @@ public interface IUserService {
 
     void changePin(User user, ChangePinRequest request);
 
-    Page<UserResponse> getAllUsers(Pageable pageable);
+    Page<UserResponse> getAllUsers(int page, int size);
 
     void lockUser(Long userId, boolean lock);
 

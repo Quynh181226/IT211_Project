@@ -14,6 +14,7 @@ import com.rikkei.bank.service.kyc.IKycService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -116,7 +117,9 @@ public class KycServiceImpl implements IKycService {
     }
 
     @Override
-    public Page<KycResponse> getPendingKyc(Pageable pageable) {
+    public Page<KycResponse> getPendingKyc(int page, int size) {
+        int zeroBasedPage = Math.max(0, page - 1);
+        Pageable pageable = PageRequest.of(zeroBasedPage, size);
         Page<KycProfile> pendingList = kycProfileRepository.findByStatus(KycStatus.PENDING, pageable);
         return pendingList.map(this::toResponse);
     }

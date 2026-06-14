@@ -20,8 +20,10 @@ public class AdminController {
     private final IUserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<StandardResponse<Page<UserResponse>>> getAllUsers(@PageableDefault(size = 20) Pageable pageable) {
-        Page<UserResponse> users = userService.getAllUsers(pageable);
+    public ResponseEntity<StandardResponse<Page<UserResponse>>> getAllUsers(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<UserResponse> users = userService.getAllUsers(page, size);
         return ResponseUtil.success(users, "Get all users successfully");
     }
 

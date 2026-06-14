@@ -42,10 +42,10 @@ public class TransactionController {
     public ResponseEntity<StandardResponse<Page<TransactionHistoryResponse>>> getTransactionHistory(
             @RequestParam String accountNumber,
             @AuthenticationPrincipal UserDetailsImpl currentUser,
-            @PageableDefault(size = 20) Pageable pageable) {
-
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size) {
         User user = authService.getCurrentUser(currentUser.getUsername());
-        Page<TransactionHistoryResponse> history = transactionHistoryService.getTransactionHistory(accountNumber, user, pageable);
+        Page<TransactionHistoryResponse> history = transactionHistoryService.getTransactionHistory(accountNumber, user, page, size);
         return ResponseUtil.success(history, "Get transaction history successfully");
     }
 }

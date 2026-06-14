@@ -39,10 +39,12 @@ public class AccountController {
 
     @LogExecutionTime
     @GetMapping("/my-accounts")
-    public ResponseEntity<StandardResponse<Page<AccountResponse>>> getMyAccounts(@AuthenticationPrincipal UserDetailsImpl currentUser,
-                                                                                 @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<StandardResponse<Page<AccountResponse>>> getMyAccounts(
+            @AuthenticationPrincipal UserDetailsImpl currentUser,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
         User user = authService.getCurrentUser(currentUser.getUsername());
-        Page<AccountResponse> accounts = accountService.getMyAccounts(user, pageable);
+        Page<AccountResponse> accounts = accountService.getMyAccounts(user, page, size);
         return ResponseUtil.success(accounts, "Get accounts successfully");
     }
 

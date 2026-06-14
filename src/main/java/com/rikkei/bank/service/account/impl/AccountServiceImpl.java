@@ -10,6 +10,7 @@ import com.rikkei.bank.service.account.IAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,9 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public Page<AccountResponse> getMyAccounts(User user, Pageable pageable) {
+    public Page<AccountResponse> getMyAccounts(User user, int page, int size) {
+        int zeroBasedPage = Math.max(0, page - 1);
+        Pageable pageable = PageRequest.of(zeroBasedPage, size);
         Page<Account> accounts = accountRepository.findByUser(user, pageable);
         return accounts.map(this::toResponse);
     }

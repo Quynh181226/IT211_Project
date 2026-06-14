@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ITransactionHistoryService {
 
-    Page<TransactionHistoryResponse> getTransactionHistory(String accountNumber, User currentUser, Pageable pageable);
+    Page<TransactionHistoryResponse> getTransactionHistory(String accountNumber, User currentUser, int page, int size);
 }

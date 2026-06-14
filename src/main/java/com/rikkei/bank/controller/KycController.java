@@ -49,8 +49,10 @@ public class KycController {
 
     @GetMapping("/pending")
     @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN')")
-    public ResponseEntity<StandardResponse<Page<KycResponse>>> getPendingKyc(@PageableDefault(size = 10) Pageable pageable) {
-        Page<KycResponse> pendingList = kycService.getPendingKyc(pageable);
+    public ResponseEntity<StandardResponse<Page<KycResponse>>> getPendingKyc(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<KycResponse> pendingList = kycService.getPendingKyc(page, size);
         return ResponseUtil.success(pendingList, "Get pending KYC list successfully");
     }
 

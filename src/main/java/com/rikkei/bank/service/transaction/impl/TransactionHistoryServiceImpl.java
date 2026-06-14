@@ -11,6 +11,7 @@ import com.rikkei.bank.service.transaction.ITransactionHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +26,16 @@ public class TransactionHistoryServiceImpl implements ITransactionHistoryService
     private final IAccountService accountService;
 
     @Override
-    public Page<TransactionHistoryResponse> getTransactionHistory(String accountNumber, User currentUser, Pageable pageable) {
-        Account account = accountService.findByAccountNumber(accountNumber);
+    public Page<TransactionHistoryResponse> getTransactionHistory(String accountNumber, User currentUser, int page, int size) {
+        int zeroBasedPage = Math.max(0, page - 1);
+        Pageable pageable = PageRequest.of(zeroBasedPage, size);
 
+        Account account = accountService.findByAccountNumber(accountNumber);
         if (!account.getUser().getId().equals(currentUser.getId())) {
             throw new BadRequestException("You don't own this account");
         }
 
         Page<Transaction> transactions = transactionRepository.findTransactionsByAccount(account, pageable);
-
         return transactions.map(tx -> toResponse(tx, accountNumber));
     }
 

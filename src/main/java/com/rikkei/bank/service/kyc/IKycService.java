@@ -14,7 +14,8 @@ public interface IKycService {
 
     KycResponse approveKyc(Long kycId, boolean approved, String rejectReason, User staffUser);
 
-    Page<KycResponse> getPendingKyc(Pageable pageable);
+    Page<KycResponse> getPendingKyc(int page, int size);
+
 
     KycResponse getMyKycStatus(User user);
 }

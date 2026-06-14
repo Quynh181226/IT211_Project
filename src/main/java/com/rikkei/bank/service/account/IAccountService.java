@@ -3,7 +3,6 @@ package com.rikkei.bank.service.account;
 import com.rikkei.bank.dto.account.response.AccountResponse;
 import com.rikkei.bank.entity.User;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 
@@ -11,7 +10,7 @@ public interface IAccountService {
 
     AccountResponse openAccount(User user, String accountName);
 
-    Page<AccountResponse> getMyAccounts(User user, Pageable pageable);
+    Page<AccountResponse> getMyAccounts(User user, int page, int size);
 
     BigDecimal getBalance(String accountNumber, User user);
 
