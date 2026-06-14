@@ -52,7 +52,7 @@ public class AuditLogAspect {
                 error.getMessage());
     }
 
-    @AfterReturning(pointcut = "execution(* com.rikkei.bank.service.TransferService.transfer(..))", returning = "result")
+    @AfterReturning(pointcut = "execution(* com.rikkei.bank.service.transaction.impl.TransferServiceImpl.transfer(..))", returning = "result")
     public void auditTransfer(Object result) {
         log.info("[AUDIT] TRANSFER completed - Details: {}", result);
     }

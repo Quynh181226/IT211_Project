@@ -93,6 +93,11 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/staff/**").hasRole("STAFF")
+                        .requestMatchers("/api/v1/customer/**").hasRole("CUSTOMER")
+
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
