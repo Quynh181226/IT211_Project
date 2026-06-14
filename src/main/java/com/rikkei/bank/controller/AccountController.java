@@ -1,14 +1,14 @@
 package com.rikkei.bank.controller;
 
 import com.rikkei.bank.annotation.LogExecutionTime;
-import com.rikkei.bank.dto.request.OpenAccountRequest;
-import com.rikkei.bank.dto.response.AccountResponse;
-import com.rikkei.bank.dto.response.BalanceResponse;
-import com.rikkei.bank.dto.response.StandardResponse;
+import com.rikkei.bank.dto.account.request.OpenAccountRequest;
+import com.rikkei.bank.dto.account.response.AccountResponse;
+import com.rikkei.bank.dto.account.response.BalanceResponse;
+import com.rikkei.bank.dto.common.response.StandardResponse;
 import com.rikkei.bank.entity.User;
 import com.rikkei.bank.security.UserDetailsImpl;
-import com.rikkei.bank.service.AccountService;
-import com.rikkei.bank.service.AuthService;
+import com.rikkei.bank.service.account.IAccountService;
+import com.rikkei.bank.service.auth.IAuthService;
 import com.rikkei.bank.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,8 @@ import java.math.BigDecimal;
 @RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
 public class AccountController {
-    private final AccountService accountService;
-    private final AuthService authService;
+    private final IAccountService accountService;
+    private final IAuthService authService;
 
     @LogExecutionTime
     @PostMapping("/open")

@@ -1,6 +1,6 @@
 //package com.rikkei.bank.util;
 //
-//import com.rikkei.bank.dto.response.StandardResponse;
+//import com.rikkei.bank.dto.common.response.StandardResponse;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
 //
@@ -28,7 +28,7 @@
 //}
 package com.rikkei.bank.util;
 
-import com.rikkei.bank.dto.response.StandardResponse;
+import com.rikkei.bank.dto.common.response.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

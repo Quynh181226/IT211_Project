@@ -1,12 +1,12 @@
 package com.rikkei.bank.controller;
 
-import com.rikkei.bank.dto.request.KycRequest;
-import com.rikkei.bank.dto.response.KycResponse;
-import com.rikkei.bank.dto.response.StandardResponse;
+import com.rikkei.bank.dto.kyc.request.KycRequest;
+import com.rikkei.bank.dto.kyc.response.KycResponse;
+import com.rikkei.bank.dto.common.response.StandardResponse;
 import com.rikkei.bank.entity.User;
 import com.rikkei.bank.security.UserDetailsImpl;
-import com.rikkei.bank.service.AuthService;
-import com.rikkei.bank.service.KycService;
+import com.rikkei.bank.service.auth.IAuthService;
+import com.rikkei.bank.service.kyc.IKycService;
 import com.rikkei.bank.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,8 @@ import java.io.IOException;
 @RequestMapping("/api/v1/kyc")
 @RequiredArgsConstructor
 public class KycController {
-    private final KycService kycService;
-    private final AuthService authService;
+    private final IKycService kycService;
+    private final IAuthService authService;
 
     @PostMapping("/upload")
     public ResponseEntity<StandardResponse<KycResponse>> submitKyc(

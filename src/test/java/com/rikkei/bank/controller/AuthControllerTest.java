@@ -1,11 +1,11 @@
 package com.rikkei.bank.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rikkei.bank.dto.request.LoginRequest;
-import com.rikkei.bank.dto.request.RegisterRequest;
-import com.rikkei.bank.dto.request.ResetPasswordRequest;
-import com.rikkei.bank.dto.response.LoginResponse;
-import com.rikkei.bank.service.AuthService;
+import com.rikkei.bank.dto.auth.request.LoginRequest;
+import com.rikkei.bank.dto.auth.request.RegisterRequest;
+import com.rikkei.bank.dto.auth.request.ResetPasswordRequest;
+import com.rikkei.bank.dto.auth.response.LoginResponse;
+import com.rikkei.bank.service.auth.IAuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ class AuthControllerTest {
     @Autowired private ObjectMapper objectMapper;
 
     @MockitoBean
-    private AuthService authService;
+    private IAuthService authService;
 
     @Test
     void register_ValidRequest_Returns201() throws Exception {

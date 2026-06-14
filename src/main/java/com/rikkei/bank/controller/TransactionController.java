@@ -1,15 +1,15 @@
 package com.rikkei.bank.controller;
 
 import com.rikkei.bank.annotation.LogExecutionTime;
-import com.rikkei.bank.dto.request.TransferRequest;
-import com.rikkei.bank.dto.response.StandardResponse;
-import com.rikkei.bank.dto.response.TransactionHistoryResponse;
-import com.rikkei.bank.dto.response.TransferResponse;
+import com.rikkei.bank.dto.transaction.request.TransferRequest;
+import com.rikkei.bank.dto.common.response.StandardResponse;
+import com.rikkei.bank.dto.transaction.response.TransactionHistoryResponse;
+import com.rikkei.bank.dto.transaction.response.TransferResponse;
 import com.rikkei.bank.entity.User;
 import com.rikkei.bank.security.UserDetailsImpl;
-import com.rikkei.bank.service.AuthService;
-import com.rikkei.bank.service.TransactionHistoryService;
-import com.rikkei.bank.service.TransferService;
+import com.rikkei.bank.service.auth.IAuthService;
+import com.rikkei.bank.service.transaction.ITransactionHistoryService;
+import com.rikkei.bank.service.transaction.ITransferService;
 import com.rikkei.bank.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
-    private final TransferService transferService;
-    private final TransactionHistoryService transactionHistoryService;
-    private final AuthService authService;
+    private final ITransferService transferService;
+    private final ITransactionHistoryService transactionHistoryService;
+    private final IAuthService authService;
 
     @LogExecutionTime
     @PostMapping("/transfer")

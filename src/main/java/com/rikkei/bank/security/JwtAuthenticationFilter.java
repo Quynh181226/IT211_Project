@@ -1,6 +1,6 @@
 package com.rikkei.bank.security;
 
-import com.rikkei.bank.service.RedisBlacklistService;
+import com.rikkei.bank.service.token.IRedisBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
     private final UserDetailsService userDetailsService;
-    private final RedisBlacklistService redisBlacklistService;
+    private final IRedisBlacklistService redisBlacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

@@ -1,14 +1,14 @@
 package com.rikkei.bank.controller;
 
 import com.rikkei.bank.annotation.LogExecutionTime;
-import com.rikkei.bank.dto.request.*;
-import com.rikkei.bank.dto.response.LoginResponse;
-import com.rikkei.bank.dto.response.RefreshTokenResponse;
-import com.rikkei.bank.dto.response.StandardResponse;
+import com.rikkei.bank.dto.auth.request.*;
+import com.rikkei.bank.dto.auth.response.LoginResponse;
+import com.rikkei.bank.dto.auth.response.RefreshTokenResponse;
+import com.rikkei.bank.dto.common.response.StandardResponse;
 import com.rikkei.bank.entity.User;
 import com.rikkei.bank.security.UserDetailsImpl;
-import com.rikkei.bank.service.AuthService;
-import com.rikkei.bank.service.UserService;
+import com.rikkei.bank.service.auth.IAuthService;
+import com.rikkei.bank.service.user.IUserService;
 import com.rikkei.bank.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthService authService;
-    private final UserService userService;
+    private final IAuthService authService;
+    private final IUserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<StandardResponse<Void>> register(@Valid @RequestBody RegisterRequest request) {

@@ -1,7 +1,7 @@
 package com.rikkei.bank.service;
 
-import com.rikkei.bank.dto.request.TransferRequest;
-import com.rikkei.bank.dto.response.TransferResponse;
+import com.rikkei.bank.dto.transaction.request.TransferRequest;
+import com.rikkei.bank.dto.transaction.response.TransferResponse;
 import com.rikkei.bank.entity.Account;
 import com.rikkei.bank.entity.Transaction;
 import com.rikkei.bank.entity.User;
@@ -9,6 +9,8 @@ import com.rikkei.bank.exception.BadRequestException;
 import com.rikkei.bank.exception.InsufficientBalanceException;
 import com.rikkei.bank.repository.AccountRepository;
 import com.rikkei.bank.repository.TransactionRepository;
+import com.rikkei.bank.service.account.IAccountService;
+import com.rikkei.bank.service.transaction.impl.TransferServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,13 +38,13 @@ class TransferServiceTest {
     private TransactionRepository transactionRepository;
 
     @Mock
-    private AccountService accountService;
+    private IAccountService accountService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private TransferService transferService;
+    private TransferServiceImpl transferService;
 
     private User currentUser;
     private Account fromAccount;
