@@ -22,11 +22,11 @@ import java.time.format.DateTimeFormatter;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AccountServiceImpl implements IAccountService {   // ← implements interface
+public class AccountServiceImpl implements IAccountService {
 
     private final AccountRepository accountRepository;
 
-    @Override   // ← thêm @Override cho mỗi method
+    @Override
     @Transactional
     public AccountResponse openAccount(User user, String accountName) {
         if (!user.isKyc()) {

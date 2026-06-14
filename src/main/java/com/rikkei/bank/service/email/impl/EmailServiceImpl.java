@@ -1,6 +1,6 @@
-package com.rikkei.bank.service.email.impl;   // ← ĐỔI package name
+package com.rikkei.bank.service.email.impl;
 
-import com.rikkei.bank.service.email.IEmailService;  // ← THÊM import interface
+import com.rikkei.bank.service.email.IEmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class EmailServiceImpl implements IEmailService {   // ← implements interface
+public class EmailServiceImpl implements IEmailService {
 
     private final JavaMailSender mailSender;
 
-    @Override   // ← THÊM
+    @Override
     public void sendOtp(String toEmail, String otp) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
