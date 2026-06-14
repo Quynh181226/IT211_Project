@@ -24,6 +24,7 @@ public class AuthController {
     private final IAuthService authService;
     private final IUserService userService;
 
+    @LogExecutionTime
     @PostMapping("/register")
     public ResponseEntity<StandardResponse<Void>> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
@@ -44,6 +45,7 @@ public class AuthController {
         return ResponseUtil.success(response, "Token refreshed successfully");
     }
 
+    @LogExecutionTime
     @PostMapping("/logout")
     public ResponseEntity<StandardResponse<Void>> logout(@RequestHeader("Authorization") String authorization,
                                                          @AuthenticationPrincipal UserDetailsImpl currentUser) {
@@ -59,6 +61,7 @@ public class AuthController {
         return ResponseUtil.success(null, "Logout successful");
     }
 
+    @LogExecutionTime
     @PutMapping("/change-pin")
     public ResponseEntity<StandardResponse<Void>> changePin(@Valid @RequestBody ChangePinRequest request,
                                                             @AuthenticationPrincipal UserDetailsImpl currentUser) {
@@ -67,12 +70,14 @@ public class AuthController {
         return ResponseUtil.success(null, "PIN changed successfully");
     }
 
+    @LogExecutionTime
     @PostMapping("/forgot-password")
     public ResponseEntity<StandardResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         authService.forgotPassword(request.getUsername());
         return ResponseUtil.success(null, "OTP has been sent to your registered contact");
     }
 
+    @LogExecutionTime
     @PostMapping("/reset-password")
     public ResponseEntity<StandardResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         authService.resetPassword(request.getUsername(), request.getOtp(), request.getNewPassword());

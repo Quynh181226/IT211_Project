@@ -1,5 +1,6 @@
 package com.rikkei.bank.controller;
 
+import com.rikkei.bank.annotation.LogExecutionTime;
 import com.rikkei.bank.dto.kyc.request.KycRequest;
 import com.rikkei.bank.dto.kyc.response.KycResponse;
 import com.rikkei.bank.dto.common.response.StandardResponse;
@@ -27,6 +28,7 @@ public class KycController {
     private final IKycService kycService;
     private final IAuthService authService;
 
+    @LogExecutionTime
     @PostMapping("/upload")
     public ResponseEntity<StandardResponse<KycResponse>> submitKyc(
             @Valid @ModelAttribute KycRequest request,
@@ -37,6 +39,7 @@ public class KycController {
         return ResponseUtil.success(response, "KYC submitted successfully");
     }
 
+    @LogExecutionTime
     @GetMapping("/my-status")
     public ResponseEntity<StandardResponse<KycResponse>> getMyKycStatus(@AuthenticationPrincipal UserDetailsImpl currentUser) {
         User user = authService.getCurrentUser(currentUser.getUsername());

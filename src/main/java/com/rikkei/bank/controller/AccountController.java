@@ -37,6 +37,7 @@ public class AccountController {
         return ResponseUtil.success(response, "Account opened successfully");
     }
 
+    @LogExecutionTime
     @GetMapping("/my-accounts")
     public ResponseEntity<StandardResponse<Page<AccountResponse>>> getMyAccounts(@AuthenticationPrincipal UserDetailsImpl currentUser,
                                                                                  @PageableDefault(size = 10) Pageable pageable) {
@@ -45,6 +46,7 @@ public class AccountController {
         return ResponseUtil.success(accounts, "Get accounts successfully");
     }
 
+    @LogExecutionTime
     @GetMapping("/{accountNumber}/balance")
     public ResponseEntity<StandardResponse<BalanceResponse>> getBalance(@PathVariable String accountNumber,
                                                                         @AuthenticationPrincipal UserDetailsImpl currentUser) {
