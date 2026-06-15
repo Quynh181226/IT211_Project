@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -26,6 +27,7 @@ public class TransactionHistoryServiceImpl implements ITransactionHistoryService
     private final IAccountService accountService;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<TransactionHistoryResponse> getTransactionHistory(String accountNumber, User currentUser, int page, int size) {
         int zeroBasedPage = Math.max(0, page - 1);
         Pageable pageable = PageRequest.of(zeroBasedPage, size);
@@ -53,7 +55,9 @@ public class TransactionHistoryServiceImpl implements ITransactionHistoryService
             counterPartyName = transaction.getFromAccount().getAccountName();
         }
 
-        BigDecimal balanceAfter = calculateBalanceAfter(transaction, accountNumber);
+        // ===== ĐÃ SỬA: lấy balanceAfter từ transaction (snapshot tại thời điểm giao dịch) =====
+        // Không cần tính toán lại từ số dư hiện tại của account
+        BigDecimal balanceAfter = transaction.getBalanceAfter();
 
         return TransactionHistoryResponse.builder()
                 .transactionCode(transaction.getTransactionCode())
@@ -66,16 +70,5 @@ public class TransactionHistoryServiceImpl implements ITransactionHistoryService
                 .balanceAfter(balanceAfter)
                 .transactionType(transaction.getTransactionType().toString())
                 .build();
-    }
-
-    private BigDecimal calculateBalanceAfter(Transaction transaction, String accountNumber) {
-        Account currentAccount;
-        if (transaction.getFromAccount().getAccountNumber().equals(accountNumber)) {
-            currentAccount = transaction.getFromAccount();
-        } else {
-            currentAccount = transaction.getToAccount();
-        }
-
-        return currentAccount.getBalance();
     }
 }

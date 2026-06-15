@@ -23,4 +23,5 @@ public class TransferResponse {
     private String status;
     private LocalDateTime transactionTime;
     private BigDecimal remainingBalance;
+    private BigDecimal balanceAfter;
 }

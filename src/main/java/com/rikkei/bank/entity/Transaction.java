@@ -49,4 +49,7 @@ public class Transaction {
     @Column(name = "created_at", nullable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "balance_after", precision = 19, scale = 2)
+    private BigDecimal balanceAfter;
 }

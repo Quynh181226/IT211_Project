@@ -74,9 +74,9 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     private String generateAccountNumber() {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        String random = String.format("%04d", new SecureRandom().nextInt(10000));
-        return "890" + timestamp + random;
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")); // 12 số
+        String random = String.format("%04d", new SecureRandom().nextInt(10000)); // 4 số
+        return "89" + timestamp + random; // 2 + 12 + 4 = 18 ký tự (OK)
     }
 
     private AccountResponse toResponse(Account account) {

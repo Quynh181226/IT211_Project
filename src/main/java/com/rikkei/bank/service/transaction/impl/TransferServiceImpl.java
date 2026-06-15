@@ -95,7 +95,10 @@ public class TransferServiceImpl implements ITransferService {
         toAccount.setBalance(newToBalance);
         accountRepository.save(toAccount);
 
-        fromAccount.setBalance(newFromBalance);
+        // ===== ĐÃ XÓA DÒNG NÀY =====
+        // fromAccount.setBalance(newFromBalance);
+        // KHÔNG set lại balance cho fromAccount vì đã update qua bulk query
+        // Tránh dirty-checking gây StaleObjectStateException
 
         String transactionCode = generateTransactionCode();
 
@@ -108,6 +111,7 @@ public class TransferServiceImpl implements ITransferService {
                 .transactionType(transactionType)
                 .status(TransactionStatus.SUCCESS)
                 .createdAt(LocalDateTime.now())
+                .balanceAfter(newFromBalance)   // ===== THÊM: lưu snapshot số dư sau giao dịch
                 .build();
 
         transactionRepository.save(transaction);
@@ -129,6 +133,7 @@ public class TransferServiceImpl implements ITransferService {
                 .description(request.getDescription())
                 .status("SUCCESS")
                 .transactionTime(LocalDateTime.now())
+                .balanceAfter(newFromBalance)
                 .remainingBalance(newFromBalance)
                 .build();
     }

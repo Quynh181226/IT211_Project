@@ -31,7 +31,7 @@ public class AuthController {
         return ResponseUtil.created(null, "User registered successfully");
     }
 
-    @LogExecutionTime
+//    @LogExecutionTime
     @PostMapping("/login")
     public ResponseEntity<StandardResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request);

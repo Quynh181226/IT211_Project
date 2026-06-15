@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     @Query("SELECT t FROM Transaction t " +
+            "JOIN FETCH t.fromAccount " +
+            "JOIN FETCH t.toAccount " +
             "WHERE (t.fromAccount = :account OR t.toAccount = :account) " +
             "AND t.status = 'SUCCESS' " +
             "ORDER BY t.createdAt DESC")
